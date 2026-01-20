@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import ViewDialog from "./Modals/ViewDialog";
+
 
 export default function Page1() {
   const [usersData, setUsersData] = useState([]);
@@ -8,6 +10,12 @@ export default function Page1() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+
+/// Show all DATA
+const [showViewModal, setShowViewModal] = useState(false);
+const [viewUser, setViewUser] = useState(null);
+
+
 
   // Form state
   const [formData, setFormData] = useState({
@@ -31,7 +39,7 @@ export default function Page1() {
 
   // CREATE
   async function addUser() {
-    if (!formData.firstName || !formData.email) return;
+    if (!formData.firstName || !formData.email) return;   //AND --> BOTH ARE PRESENT THEN ADD
 
     const response = await fetch("https://dummyjson.com/users/add", {
       method: "POST",
@@ -85,7 +93,7 @@ export default function Page1() {
     <div className="min-h-screen bg-blue-200 p-6">
       <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow">
         <h1 className="text-2xl font-bold mb-4 text-center">
-          User Data API (CRUD with Popup)
+          User Data API (CRUD with Modal)
         </h1>
 
         {/* ADD FORM */}
@@ -136,6 +144,7 @@ export default function Page1() {
                   <td className="border p-2">{user.firstName}</td>
                   <td className="border p-2">{user.email}</td>
                   <td className="border p-2 space-x-2">
+
                     <button
                       onClick={() => {
                         setFormData(user);
@@ -145,6 +154,8 @@ export default function Page1() {
                     >
                       Edit
                     </button>
+
+
                     <button
                       onClick={() => {
                         setSelectedUserId(user.id);
@@ -154,13 +165,35 @@ export default function Page1() {
                     >
                       Delete
                     </button>
+                    {/* ///////////////// */}
+                    <button
+  onClick={() => {
+    setViewUser(user);
+    setShowViewModal(true);
+  }}
+  className="bg-green-500 text-white px-3 py-1 rounded"
+>
+  Show
+</button>
+
+{/* //////////////////// */}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          
         )}
+
       </div>
+
+      {/* VIEW MODAL */}
+      <ViewDialog
+        open={showViewModal}
+        user={viewUser}
+        onClose={() => setShowViewModal(false)}
+      />
+
 
       {/* EDIT MODAL */}
       {showEditModal && (
